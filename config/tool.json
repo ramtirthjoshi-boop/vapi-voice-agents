@@ -1,0 +1,47 @@
+[
+  {
+    "id": "a245a36a-2fed-402f-b9e7-4b2036949335",
+    "createdAt": "2026-09-18T04:14:46.700Z",
+    "updatedAt": "2026-09-18T04:18:16.556Z",
+    "type": "function",
+    "function": {
+      "name": "function_tool",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    "messages": [
+      {
+        "type": "request-start",
+        "blocking": false
+      }
+    ],
+    "orgId": "4ebd51a7-1e9d-455d-aaa9-13a46ae21520",
+    "server": {
+      "url": "https://n8n-fnrziea9soye4v4kcpe5a5gp.35.239.187.86.sslip.io/webhook-test/40537f82-24e6-4f3c-9646-32a55242c8b3",
+      "timeoutSeconds": 20,
+      "staticIpAddressesEnabled": false
+    },
+    "variableExtractionPlan": {
+      "schema": {
+        "type": "object",
+        "required": [],
+        "properties": {}
+      }
+    },
+    "latestVersion": "v2"
+  },
+  {
+    "id": "f25a037d-e451-4873-84d0-618b02894523",
+    "createdAt": "2026-09-18T01:07:06.842Z",
+    "updatedAt": "2026-09-18T01:07:06.842Z",
+    "type": "endCall",
+    "function": {
+      "name": "end_call_tool"
+    },
+    "orgId": "4ebd51a7-1e9d-455d-aaa9-13a46ae21520",
+    "latestVersion": "v1"
+  }
+]

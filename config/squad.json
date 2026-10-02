@@ -1,0 +1,76 @@
+[
+  {
+    "id": "c3b8f26f-ef08-494d-b415-6607931bd694",
+    "orgId": "4ebd51a7-1e9d-455d-aaa9-13a46ae21520",
+    "createdAt": "2026-09-18T05:14:38.286Z",
+    "updatedAt": "2026-09-18T05:33:42.812Z",
+    "members": [
+      {
+        "assistantId": "20e4fd60-4a9a-4a1d-b219-ae587396a9b7",
+        "assistantOverrides": {
+          "metadata": {
+            "position": {
+              "x": 246.57715986592018,
+              "y": 98.1100752495824
+            }
+          },
+          "tools:append": [
+            {
+              "type": "handoff",
+              "async": false,
+              "function": {
+                "name": "handoff_to_assistant"
+              },
+              "messages": [],
+              "destinations": [
+                {
+                  "type": "assistant",
+                  "assistantId": "71c444db-6687-43b3-a11e-0a76542471b0",
+                  "description": "New Connection",
+                  "assistantName": "Jack - Lesson 4 - Squad",
+                  "variableExtractionPlan": {
+                    "schema": {
+                      "type": "object",
+                      "required": [
+                        "User_name",
+                        "Call_topic",
+                        "Caller_intent",
+                        "specific_symptom"
+                      ],
+                      "properties": {
+                        "User_name": {
+                          "type": "string"
+                        },
+                        "Call_topic": {
+                          "type": "string"
+                        },
+                        "Caller_intent": {
+                          "type": "string"
+                        },
+                        "specific_symptom": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "assistantId": "71c444db-6687-43b3-a11e-0a76542471b0",
+        "assistantOverrides": {
+          "metadata": {
+            "position": {
+              "x": 675.872522861888,
+              "y": 108.6879255249041
+            }
+          }
+        }
+      }
+    ],
+    "name": "Lesson 4 squad"
+  }
+]

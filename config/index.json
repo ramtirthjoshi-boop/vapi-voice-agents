@@ -1,0 +1,45 @@
+{
+  "exportedAt": "2026-10-02T19:47:54.927Z",
+  "items": [
+    {
+      "endpoint": "assistant",
+      "name": "Jack - Lesson 4 - Squad",
+      "id": "71c444db-6687-43b3-a11e-0a76542471b0"
+    },
+    {
+      "endpoint": "assistant",
+      "name": "Sarah - Lesson 4 - Squad",
+      "id": "20e4fd60-4a9a-4a1d-b219-ae587396a9b7"
+    },
+    {
+      "endpoint": "assistant",
+      "name": "Sarah - Lesson 3 - 2",
+      "id": "c0e02801-c47f-4992-9686-8456d0e68a89"
+    },
+    {
+      "endpoint": "assistant",
+      "name": "Jack - Lesson 2",
+      "id": "588089e1-20a6-44a1-95ca-15cb2f723ec5"
+    },
+    {
+      "endpoint": "assistant",
+      "name": "Jack - Lesson 1 ",
+      "id": "bedc7407-e874-4d33-86d9-2ae5c6790bad"
+    },
+    {
+      "endpoint": "squad",
+      "name": "Lesson 4 squad",
+      "id": "c3b8f26f-ef08-494d-b415-6607931bd694"
+    },
+    {
+      "endpoint": "tool",
+      "name": "function_tool",
+      "id": "a245a36a-2fed-402f-b9e7-4b2036949335"
+    },
+    {
+      "endpoint": "tool",
+      "name": "end_call_tool",
+      "id": "f25a037d-e451-4873-84d0-618b02894523"
+    }
+  ]
+}

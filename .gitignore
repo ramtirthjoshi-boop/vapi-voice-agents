@@ -1,0 +1,20 @@
+# Never commit secrets
+.env
+.env.*
+env.sh
+*.key
+*.pem
+.vapi-key
+credentials*.json
+
+# Raw, unscrubbed API dumps
+raw/
+scratch/
+tmp/
+
+# OS / editor noise
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+node_modules/
