@@ -56,24 +56,43 @@ costs nothing in realism.
 | `config/workflow.json` | empty — call flow lives in Vapi squads and in n8n, not in Vapi workflows |
 | `config/index.json` | manifest with object counts and the export timestamp |
 | `export-vapi.js` | pulls all five Vapi endpoints and writes this directory |
+| `wire-vapi.js` | sets the call-log webhook and outcome schema on every assistant |
 
 The five assistants are kept rather than squashed to the final pair, because the
 progression from a single agent to a two-agent squad with a transfer is the part
 worth reading.
 
+## Capturing the result of a call
+
+A practice call is only useful if it leaves a record, so each assistant posts
+its end-of-call report to an n8n webhook, which appends one row per call to a
+Google Sheet: timestamp, which agent, how it ended, duration, outcome, the
+reason behind it, caller turn count, recording URL and full transcript.
+
+The outcome is not inferred by keyword-matching the transcript. Each assistant
+declares an analysis plan with a closed schema ( /  / ,
+plus a one-sentence reason), so Vapi returns the outcome as a typed field. When
+Vapi returns no outcome the cell is left blank rather than guessed — a blank row
+is a known unknown, a guessed one is a wrong number that looks like data.
+
+ applies the webhook, the shared secret and the analysis plan to
+every assistant in one pass. The webhook URL is passed in through the
+environment and deliberately not committed: the endpoint accepts
+unauthenticated POSTs, so publishing its address would let anyone write rows
+into the log.
+
 ## Current limits
 
 Stated plainly, since they are the next things to build:
 
-- **Call outcomes are not captured.** The prompts define a closed set of outcomes,
-  but `serverUrl` is unset on every assistant, so nothing receives the end-of-call
-  report. Outcomes currently exist only in the transcript. Wiring Vapi's
-  end-of-call webhook to a logger is what turns practice into a scoreboard.
-- **No scoring.** Related but separate: a call ends with an outcome, not a
-  judgement of how the caller got there.
-- **Prompts use a placeholder company ("XYZ").** Pointing the agents at a specific
-  industry would make objections concrete instead of generic.
+- **No scoring.** A call now ends with a recorded outcome, but not with a
+  judgement of how the caller got there. Turn count and duration are logged as
+  the raw material for that.
+- **Prompts use a placeholder company (XYZ).** Pointing the agents at a
+  specific industry would make objections concrete instead of generic.
 - **Web calls only.** No provisioned phone number, so there is no real PSTN leg.
+- **The log webhook is open.** Vapi sends a shared secret and the n8n side can
+  check it, but until that value is filled in the endpoint trusts any caller.
 
 ## Re-exporting
 
