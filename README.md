@@ -70,12 +70,12 @@ Google Sheet: timestamp, which agent, how it ended, duration, outcome, the
 reason behind it, caller turn count, recording URL and full transcript.
 
 The outcome is not inferred by keyword-matching the transcript. Each assistant
-declares an analysis plan with a closed schema ( /  / ,
+declares an analysis plan with a closed schema (`Booked` / `Callback` / `Dead`,
 plus a one-sentence reason), so Vapi returns the outcome as a typed field. When
 Vapi returns no outcome the cell is left blank rather than guessed — a blank row
 is a known unknown, a guessed one is a wrong number that looks like data.
 
- applies the webhook, the shared secret and the analysis plan to
+`wire-vapi.js` applies the webhook, the shared secret and the analysis plan to
 every assistant in one pass. The webhook URL is passed in through the
 environment and deliberately not committed: the endpoint accepts
 unauthenticated POSTs, so publishing its address would let anyone write rows
@@ -88,7 +88,7 @@ Stated plainly, since they are the next things to build:
 - **No scoring.** A call now ends with a recorded outcome, but not with a
   judgement of how the caller got there. Turn count and duration are logged as
   the raw material for that.
-- **Prompts use a placeholder company (XYZ).** Pointing the agents at a
+- **Prompts use a placeholder company ("XYZ").** Pointing the agents at a
   specific industry would make objections concrete instead of generic.
 - **Web calls only.** No provisioned phone number, so there is no real PSTN leg.
 - **The log webhook is open.** Vapi sends a shared secret and the n8n side can
