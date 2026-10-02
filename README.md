@@ -1,21 +1,79 @@
-# Vapi voice agents
+# Cold-call simulator — voice AI practice prospects
 
-Version-controlled export of the Vapi voice-agent configuration: assistants,
-squads and tools. Exported through the Vapi API by `export-vapi.js`.
+Two voice agents that behave like a real B2B phone gauntlet, so cold calls can be
+rehearsed without burning real leads.
 
-## What's here
+`Sarah` is a receptionist. She screens the caller, gives up as little as possible,
+and decides whether to route the call onward. `Jack` is the owner and the actual
+decision-maker — he only ever picks up a call that has already been transferred to
+him, and he is busy, skeptical and protective of his time.
+
+Run as a squad, the two compose into the thing that actually makes cold calling
+hard: you have to earn your way past a gatekeeper before you get to pitch anyone
+who can say yes.
+
+## Why build it this way
+
+Most voice-agent examples are agents that *help* you. These are deliberately the
+opposite — the design goal is an agent that is difficult, in the specific ways a
+real prospect is difficult. That turned out to be mostly a prompt-engineering
+problem rather than a model problem, and most of the work is in the negative
+constraints:
+
+- **Role boundaries are stated as refusals.** "You are NOT customer support. You
+  do NOT explain processes." Without these, a helpful-by-default model slides into
+  answering the caller's questions, and the caller gets a free pass.
+- **Jack never receives a direct call.** His prompt establishes that the call was
+  transferred to him. This stops him from re-running the screening Sarah just did.
+- **Every call ends in one of a fixed set of outcomes** rather than trailing off,
+  so a practice session produces a result that can be judged — booked, declined,
+  or not qualified.
+- **Each agent opens cold.** Sarah's first line is a flat "How may I help you
+  today?", Jack's is "Hi, Who's this?" — no setup, no context handed to the caller.
+
+## Stack
+
+| Layer | Choice |
+|---|---|
+| Orchestration, squads, call transfer | Vapi |
+| Speech to text | Deepgram |
+| Reasoning | OpenAI `gpt-4o-mini` (`gpt-4.1` on the earliest build) |
+| Text to speech | ElevenLabs |
+
+`gpt-4o-mini` is the deliberate pick over a larger model: in a phone call,
+response latency reads as hesitation, and a prospect who hesitates stops feeling
+like a prospect. The prompt carries the behaviour, so the cheaper, faster model
+costs nothing in realism.
+
+## What's in the repo
 
 | File | Contents |
 |---|---|
-| `config/assistant.json` | 5 assistants |
-| `config/squad.json` | 1 squad |
-| `config/tool.json` | 2 tools |
-| `config/phone-number.json` | empty — no numbers provisioned |
-| `config/workflow.json` | empty — no Vapi-native workflows |
-| `config/index.json` | manifest with counts and the export timestamp |
+| `config/assistant.json` | 5 assistants — the Jack and Sarah builds, in the order they were developed |
+| `config/squad.json` | the squad that chains Sarah to Jack |
+| `config/tool.json` | 2 tools, including end-of-call handling |
+| `config/phone-number.json` | empty — no number provisioned, calls run over the web widget |
+| `config/workflow.json` | empty — call flow lives in Vapi squads and in n8n, not in Vapi workflows |
+| `config/index.json` | manifest with object counts and the export timestamp |
+| `export-vapi.js` | pulls all five Vapi endpoints and writes this directory |
 
-The call flow that drives these agents lives in n8n, not in Vapi — see the
-`Vapi Workflow` workflow in the n8n backup repo.
+The five assistants are kept rather than squashed to the final pair, because the
+progression from a single agent to a two-agent squad with a transfer is the part
+worth reading.
+
+## Current limits
+
+Stated plainly, since they are the next things to build:
+
+- **Call outcomes are not captured.** The prompts define a closed set of outcomes,
+  but `serverUrl` is unset on every assistant, so nothing receives the end-of-call
+  report. Outcomes currently exist only in the transcript. Wiring Vapi's
+  end-of-call webhook to a logger is what turns practice into a scoreboard.
+- **No scoring.** Related but separate: a call ends with an outcome, not a
+  judgement of how the caller got there.
+- **Prompts use a placeholder company ("XYZ").** Pointing the agents at a specific
+  industry would make objections concrete instead of generic.
+- **Web calls only.** No provisioned phone number, so there is no real PSTN leg.
 
 ## Re-exporting
 
@@ -24,17 +82,13 @@ $env:VAPI_API_KEY = Read-Host "Paste Vapi private key"
 node export-vapi.js
 ```
 
-The script replaces credential-shaped fields with `<SCRUBBED>` before writing,
-so this repo holds configuration and prompts but no secrets. Rebind anything
-marked `<SCRUBBED>` in the Vapi dashboard after an import.
-
-Field-name scrubbing only catches fields that are *named* like credentials. A
-key pasted into some other field, such as a custom header value on a tool,
-survives it. Check a fresh export before committing.
+Credential-shaped fields are replaced with `<SCRUBBED>` before anything is
+written, so this repo holds prompts and configuration but no secrets. Note that
+this matches on field *names* — a key pasted into some other field, such as a
+custom header on a tool, would survive it. Check a fresh export before committing.
 
 ## Restoring
 
 There is no bulk import. Re-create each object with a POST to the matching Vapi
-endpoint (`/assistant`, `/squad`, `/tool`), oldest dependency first: tools, then
-assistants, then the squad that references them. The `id` fields in these files
-belong to the old objects and are not reusable.
+endpoint, dependencies first: `/tool`, then `/assistant`, then `/squad`. The `id`
+fields in these files belong to the old objects and cannot be reused.
